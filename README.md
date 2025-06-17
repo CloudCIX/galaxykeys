@@ -8,7 +8,7 @@ The bash script `galaxykeys_build-keyring.sh` in this project generates the enti
 It automates the secure creation of a `GPG key`, initialises a dedicated `pass` directory with this key.
 Finally all *258 SSH Private Keys* are encrypted as `.gpg` files in the pass store, with their corresponding *public key* saved as a plain `.pub` file in the directory structure (not encrypted).
 
-Additionally, running the `galaxykeys_export-gitlab.sh` script will allow this directory of `.gpg` encrypted keypairs to be backed up to GitLab **using HTTPS and a GitLab access token only**. This is intended as a one-time backup, not for ongoing sync.
+Additionally, running the `galaxykeys_export-git.sh` script will allow this directory of `.gpg` encrypted keypairs to be backed up to a remote git repository **using HTTPS and an access token only**. This is intended as a one-time backup, not for ongoing sync.
 
 ---
 
@@ -19,7 +19,7 @@ Additionally, running the `galaxykeys_export-gitlab.sh` script will allow this d
 * Creates a structured keypair store: `pod000/Administrator`, `pod000/PAT`, `pod000/Robot`, and `pod001`–`pod255` for `Robot`
 * Automatically generates and stores SSH private keys in `pass` as `.gpg` files, and public keys as plain `.pub` files in the directory structure
 * Ensures `.gpg-id` isolation per directory
-* **One-time GitLab backup via HTTPS and access token**
+* **One-time remote git repository backup via HTTPS and access token**
 
 ---
 
@@ -30,7 +30,7 @@ Ensure the following tools are installed:
 * `gpg` (GNU Privacy Guard)
 * `pass` (Password Store)
 * `ssh-keygen` (OpenSSH)
-* `git` (for GitLab backup functionality)
+* `git` (for remote backup functionality)
 
 Install on Debian/Ubuntu:
 
@@ -70,7 +70,7 @@ sudo apt install gnupg pass openssh-client git
 e.g. pass CIX42/pod000/Robot/CIX42_Robot_pod000_PRIVATE
 ```
 
-5. **Back up to GitLab (HTTPS + access token only, one-time backup)**:
+5. **Back up to a remote git repository (HTTPS + access token only, one-time backup)**:
 
    a. **Make the export script executable**:
 
@@ -85,8 +85,8 @@ e.g. pass CIX42/pod000/Robot/CIX42_Robot_pod000_PRIVATE
    ```
 
    c. **Follow the prompts:**
-   * Enter the *PRIVATE* GitLab HTTPS repository URL (e.g., https://gitlab.com/username/repo.git)
-   * Enter your GitLab access token (with write_repository and read_repository scopes)
+   * Enter the *PRIVATE* remote HTTPS git repository URL (e.g., <https://example.com/username/repo.git>)
+   * Enter your access token (with write_repository and read_repository scopes, or equivalent)
    * Enter the key store folder name
    * Enter your Git user name and email
    * Enter branch name (or use default)
@@ -146,7 +146,7 @@ cat ~/.password-store/YourStoreName/pod000/Robot/YourStoreName_Robot_pod000_PUBL
 ## Project Files
 
 * `galaxykeys_build-keyring.sh` - Main script for generating GPG keys and password store
-* `galaxykeys_export-gitlab.sh` - Script for GitLab backup (HTTPS + Acess token)
+* `galaxykeys_export-git.sh` - Script for remote git repository backup (HTTPS + access token)
 * `README.md` - This documentation file
 
 ---
