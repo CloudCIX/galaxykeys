@@ -212,15 +212,16 @@ pass rm -f "${GNUPG_STORE}/.test_secret" >/dev/null 2>&1
 
 ### Step 6: Create pass folder structure ###
 echo "[INFO] Creating folder structure..."
-if ! mkdir -p "$BASE_PATH/pod000/Administrator" \
-             "$BASE_PATH/pod000/PAT" \
-             "$BASE_PATH/pod000/Robot"; then
+if ! mkdir -p "$BASE_PATH/pod000/administrator" \
+             "$BASE_PATH/pod000/pat" \
+             "$BASE_PATH/pod000/robot" \
+             "$BASE_PATH/pod000/jumphost"; then
     echo "[ERROR] Failed to create pod000 directories" >&2
     exit 1
 fi
 
 for i in $(seq -w 1 255); do
-    if ! mkdir -p "$BASE_PATH/pod$i/Robot"; then
+    if ! mkdir -p "$BASE_PATH/pod$i/robot"; then
         echo "[ERROR] Failed to create pod$i directory" >&2
         exit 1
     fi
@@ -343,7 +344,7 @@ generate_and_store_keys() {
 
 ### Step 8: Begin Generating Keys ###
 echo "[INFO] Generating keys for pod000..."
-users=("Administrator" "PAT" "Robot")
+users=("administrator" "pat" "robot" "jumphost")
 total_users=${#users[@]}
 for idx in "${!users[@]}"; do
     user="${users[$idx]}"
@@ -361,7 +362,7 @@ echo "[INFO] Generating keys for pod001-255 (this may take a while)..."
 # Sequential processing with progress bar
 total_pods=255
 for i in $(seq -w 1 255); do
-    if ! generate_and_store_keys "pod$i" "Robot"; then
+    if ! generate_and_store_keys "pod$i" "robot"; then
         echo # New line after progress bar
         echo "[ERROR] Failed to generate keys for pod$i" >&2
         exit 1

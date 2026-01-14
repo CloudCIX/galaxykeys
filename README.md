@@ -16,7 +16,7 @@ Additionally, running the `galaxykeys_export-git.sh` script will allow this dire
 
 * Generates a new GPG key with a user-supplied passphrase & details
 * Initialises a dedicated subdirectory within `pass`
-* Creates a structured keypair store: `pod000/Administrator`, `pod000/PAT`, `pod000/Robot`, and `pod001`–`pod255` for `Robot`
+* Creates a structured keypair store: `pod000/administrator`, `pod000/pat`, `pod000/robot`, `pod000/jumphost`, and `pod001`–`pod255` for `robot`
 * Automatically generates and stores SSH private keys in `pass` as `.gpg` files, and public keys as plain `.pub` files in the directory structure
 * Ensures `.gpg-id` isolation per directory
 * **One-time remote git repository backup via HTTPS and access token**
@@ -67,7 +67,7 @@ sudo apt install gnupg pass openssh-client git
    To read an encrypted ssh key use the following command,
 
 ```bash
-e.g. pass CIX42/pod000/Robot/CIX42_Robot_pod000_PRIVATE
+e.g. pass CIX42/pod000/robot/CIX42_robot_pod000_PRIVATE
 ```
 
 5. **Back up to a remote git repository (HTTPS + access token only, one-time backup)**:
@@ -101,14 +101,15 @@ The following folder hierarchy will be created in `~/.password-store/` under a d
 ~/.password-store/
 └── CIX42/
     ├── pod000/
-    │   ├── Administrator/
-    │   ├── PAT/
-    │   └── Robot/
+    │   ├── administrator/
+    │   ├── pat/
+    │   ├── robot/
+    │   └── jumphost/
     ├── pod001/
-    │   └── Robot/
+    │   └── robot/
     ├── ...
     └── pod255/
-        └── Robot/
+        └── robot/
 ```
 
 Each subdirectory will contain:
@@ -119,7 +120,7 @@ Each subdirectory will contain:
 To read an encrypted ssh key in this directory:
 
 ```bash
-e.g. pass CIX42/pod000/Robot/CIX42_Robot_pod000_PRIVATE
+e.g. pass CIX42/pod000/robot/CIX42_robot_pod000_PRIVATE
 ```
 
 ---
@@ -135,11 +136,43 @@ e.g. pass CIX42/pod000/Robot/CIX42_Robot_pod000_PRIVATE
 pass ls YourStoreName/
 
 # Read a specific private key
-pass YourStoreName/pod000/Robot/YourStoreName_Robot_pod000_PRIVATE
+pass YourStoreName/pod000/robot/YourStoreName_robot_pod000_PRIVATE
 
 # Read a specific public key
-cat ~/.password-store/YourStoreName/pod000/Robot/YourStoreName_Robot_pod000_PUBLIC.pub
+cat ~/.password-store/YourStoreName/pod000/robot/YourStoreName_robot_pod000_PUBLIC.pub
 ```
+
+---
+
+## Transferring Your GPG Key to Another Machine
+
+After the creation of your galaxy keys, you may need to transfer your GPG private key to another machine to decrypt the stored SSH keys.
+
+### On your original machine:
+
+**Find your GPG key fingerprint:**
+
+```bash
+gpg --list-secret-keys --keyid-format=long
+```
+
+Look for the key you used (it should match the fingerprint shown during key generation).
+
+**Export the private key:**
+
+```bash
+gpg --export-secret-keys --armor YOUR_KEY_FINGERPRINT > gpg-private-key.asc
+```
+
+### On the machine you wish to read on:
+
+**Import the private key:**
+
+```bash
+gpg --import /root/gpg-private-key.asc
+```
+
+**Note:** After importing, you'll be prompted for the GPG passphrase when accessing encrypted keys.
 
 ---
 
@@ -148,11 +181,3 @@ cat ~/.password-store/YourStoreName/pod000/Robot/YourStoreName_Robot_pod000_PUBL
 * `galaxykeys_build-keyring.sh` - Main script for generating GPG keys and password store
 * `galaxykeys_export-git.sh` - Script for remote git repository backup (HTTPS + access token)
 * `README.md` - This documentation file
-
----
-
-## Authors
-
-<js@cix.ie>
-<em@cix.ie>
-<jmmr@cix.ie>
